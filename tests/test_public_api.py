@@ -62,6 +62,20 @@ def test_mask_secret_keep_default_is_four():
     assert sig.parameters["keep"].default == 4
 
 
+def test_annotations_use_typing_union_not_pep604():
+    for name in ALL_NAMES:
+        fn = getattr(validkit, name)
+        sig = inspect.signature(fn)
+        for param in sig.parameters.values():
+            assert "|" not in str(param.annotation), (
+                f"{name}.{param.name} uses `X | Y` syntax; use typing.Union"
+            )
+        if sig.return_annotation is not inspect.Signature.empty:
+            assert "|" not in str(sig.return_annotation), (
+                f"{name} return annotation uses `X | Y` syntax; use typing.Union"
+            )
+
+
 def test_require_max_length_raises_above_limit():
     with pytest.raises(ValueError):
         require_max_length("x" * 10001)
