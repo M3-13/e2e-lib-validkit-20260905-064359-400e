@@ -13,4 +13,12 @@ def clamp(
     low: Union[int, float],  # noqa: UP007
     high: Union[int, float],  # noqa: UP007
 ) -> Union[int, float]:  # noqa: UP007
-    raise NotImplementedError("clamp is not implemented yet")
+    """Clamp ``value`` into the inclusive range ``[low, high]``.
+
+    Returns ``min(max(value, low), high)`` so ``int`` and ``float`` inputs keep
+    their type (no forced cast). Raises ``ValueError`` when ``low > high``; the
+    message deliberately does not echo the input values (see AC-15).
+    """
+    if low > high:
+        raise ValueError("low must not be greater than high")
+    return min(max(value, low), high)
